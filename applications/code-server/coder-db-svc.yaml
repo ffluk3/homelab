@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: code-server
+  name: coder-db-svc
   namespace: code-server
 spec:
   selector:
     app: code-server
-    tier: frontend
+    tier: database
   ports:
-  - port: 7000
-    targetPort: 80
+  - protocol: TCP
+    port: 5432

@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coder-db
+  namespace: code-server
+spec:
+  selector:
+    matchLabels:
+      app: code-server
+      tier: database
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: code-server
+        tier: database
+    spec:
+      containers:
+      - image: postgres:14.2
+        name: code-db
+        env:
+          - name: POSTGRES_USER
+            value: username # The PostgreSQL user (useful to connect to the database)
+          - name: POSTGRES_PASSWORD
+            value: password # The PostgreSQL password (useful to connect to the database)
+          - name: POSTGRES_DB
+            value: coder # The PostgreSQL default database (automatically created at first launch)
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

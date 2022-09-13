@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: code-server
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      containers:
+      - image: ghcr.io/coder/coder:latest
+        name: code-server
+        ports:
+        - containerPort: 7000
+        env:
+          - name: CODER_PG_CONNECTION_URL
+            value: "postgresql://${POSTGRES_USER:-username}:${POSTGRES_PASSWORD:-password}@database/${POSTGRES_DB:-coder}?sslmode=disable"
+          - name: CODER_ADDRESS
+            value: "0.0.0.0:7080"
+          # You'll need to set CODER_ACCESS_URL to an IP or domain
+          # that workspaces can reach. This cannot be localhost
+          # or 127.0.0.1 for non-Docker templates!
+          - name: CODER_ACCESS_URL
+            value: "https://pibox.local/code"
+          # Alternatively, you can enable CODER_TUNNEL for
+          # proof-of-concept deployments.
+          - name: CODER_TUNNEL
+            value: "${CODER_TUNNEL:-false}"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - image: postgres:14.2
+        name: code-db
+        env:
+          - name: POSTGRES_USER
+            value: ${POSTGRES_USER:-username} # The PostgreSQL user (useful to connect to the database)
+          - name: POSTGRES_PASSWORD
+            value: ${POSTGRES_PASSWORD:-password} # The PostgreSQL password (useful to connect to the database)
+          - name: POSTGRES_DB
+            value: ${POSTGRES_DB:-coder} # The PostgreSQL default database (automatically created at first launch)
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

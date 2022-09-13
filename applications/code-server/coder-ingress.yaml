@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: code-server-ingress
+  namespace: code-server
+spec:
+  entryPoints:
+    - web           # <-- using the web entrypoint, not the traefik (9000) one
+  routes:           # v-- adding a host rule
+    - match: Host(`pibox.local`) && Path(`/code`)
+      kind: Rule
+      priority: 8 # <-- makes this take precedence over argo
+      services:
+        - name: api@internal
+          kind: TraefikService

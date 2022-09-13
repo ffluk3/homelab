@@ -22,18 +22,18 @@ spec:
         - containerPort: 7000
         env:
           - name: CODER_PG_CONNECTION_URL
-            value: "postgresql://username:password@coder-db-svc?sslmode=disable"
+            value: "postgresql://username:password@coder-db-svc.svc.cluster.local?sslmode=disable"
           - name: CODER_ADDRESS
             value: "0.0.0.0:7080"
           # You'll need to set CODER_ACCESS_URL to an IP or domain
           # that workspaces can reach. This cannot be localhost
           # or 127.0.0.1 for non-Docker templates!
           - name: CODER_ACCESS_URL
-            value: "https://pibox.local/code"
+            value: "http://pibox.local/code"
           # Alternatively, you can enable CODER_TUNNEL for
           # proof-of-concept deployments.
           - name: CODER_TUNNEL
-            value: "${CODER_TUNNEL:-false}"
+            value: "false"
         resources:
           requests:
             memory: "64Mi"

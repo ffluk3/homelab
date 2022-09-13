@@ -50,13 +50,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: code-server
+      app: postgres
       tier: database
   replicas: 1
   template:
     metadata:
       labels:
-        app: code-server
+        app: postgres
         tier: database
     spec:
       containers:

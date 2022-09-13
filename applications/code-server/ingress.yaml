@@ -13,3 +13,4 @@ spec:
       services:
         - name: code-server
           namespace: code-server
+          port: 80

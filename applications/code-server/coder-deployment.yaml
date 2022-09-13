@@ -23,7 +23,7 @@ spec:
         - containerPort: 7000
         env:
           - name: CODER_PG_CONNECTION_URL
-            value: "postgresql://username:password@coder-db-svc.svc.cluster.local?sslmode=disable"
+            value: "postgresql://username:password@code-server/code-db.code-server.svc.cluster.local?sslmode=disable"
           - name: CODER_ADDRESS
             value: "0.0.0.0:7080"
           # You'll need to set CODER_ACCESS_URL to an IP or domain

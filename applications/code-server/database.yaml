@@ -45,7 +45,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coder-db
+  name: code-db
   namespace: code-server
 spec:
   selector:
@@ -85,7 +85,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: coder-db
+  name: code-db
   namespace: code-server
 spec:
   selector:

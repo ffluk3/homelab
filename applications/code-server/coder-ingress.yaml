@@ -9,7 +9,7 @@ spec:
   routes:           # v-- adding a host rule
     - match: Host(`pibox.local`) && Path(`/code`)
       kind: Rule
-      priority: 8 # <-- makes this take precedence over argo
+      priority: 7 # <-- makes this take precedence over argo
       services:
-        - name: api@internal
-          kind: TraefikService
+        - name: code-server
+          namespace: code-server

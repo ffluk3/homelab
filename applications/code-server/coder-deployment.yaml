@@ -31,10 +31,6 @@ spec:
           # or 127.0.0.1 for non-Docker templates!
           - name: CODER_ACCESS_URL
             value: "http://pibox.local/code"
-          # Alternatively, you can enable CODER_TUNNEL for
-          # proof-of-concept deployments.
-          - name: CODER_TUNNEL
-            value: "false"
         resources:
           requests:
             memory: "64Mi"

@@ -10,6 +10,9 @@ spec:
     - match: Host(`pibox.local`) && Path(`/code`)
       kind: Rule
       priority: 7 # <-- makes this take precedence over argo
+      middlewares:
+      - name: stripprefix
+        namespace: default
       services:
         - name: code-server
           namespace: code-server

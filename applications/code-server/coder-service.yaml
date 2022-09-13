@@ -8,5 +8,4 @@ spec:
     app: code-server
     tier: frontend
   ports:
-  - port: 80
-    targetPort: 7000
+  - port: 7000

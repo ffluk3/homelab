@@ -17,15 +17,28 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: ghcr.io/coder/coder:latest
+      - image: ghcr.io/coder/coder:v0.8.14
+        imagePullPolicy: IfNotPresent
         name: code-server
         ports:
-        - containerPort: 7000
+          - name: "http"
+            containerPort: 8080
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /api/v2/buildinfo
+            port: "http"
+            scheme: "HTTP"
+        livenessProbe:
+          httpGet:
+            path: /api/v2/buildinfo
+            port: "http"
+            scheme: "HTTP"
         env:
           - name: CODER_PG_CONNECTION_URL
             value: "postgresql://username:password@code-server/code-db.code-server.svc.cluster.local?sslmode=disable"
           - name: CODER_ADDRESS
-            value: "0.0.0.0:7080"
+            value: "0.0.0.0:8080"
           # You'll need to set CODER_ACCESS_URL to an IP or domain
           # that workspaces can reach. This cannot be localhost
           # or 127.0.0.1 for non-Docker templates!
@@ -38,3 +51,18 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: code-server
+  namespace: code-server
+spec:
+  selector:
+    app: code-server
+    tier: frontend
+  ports:
+    - name: "http"
+      port: 80
+      targetPort: "http"
+      protocol: TCP

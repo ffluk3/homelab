@@ -63,16 +63,16 @@ spec:
           - name: "http"
             containerPort: 8080
             protocol: TCP
-        readinessProbe:
-          httpGet:
-            path: /api/v2/buildinfo
-            port: "http"
-            scheme: "HTTP"
-        livenessProbe:
-          httpGet:
-            path: /api/v2/buildinfo
-            port: "http"
-            scheme: "HTTP"
+        # readinessProbe:
+        #   httpGet:
+        #     path: /api/v2/buildinfo
+        #     port: "http"
+        #     scheme: "HTTP"
+        # livenessProbe:
+        #   httpGet:
+        #     path: /api/v2/buildinfo
+        #     port: "http"
+        #     scheme: "HTTP"
         env:
           - name: CODER_PG_CONNECTION_URL
             value: "postgresql://username:password@code-server/code-db.code-server.svc.cluster.local?sslmode=disable"

@@ -1,114 +1,164 @@
-apiVersion: apps/v1
-kind: Deployment
+---
+# Source: code-server/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
+  name: code-server
+---
+# Source: code-server/templates/pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
 metadata:
   name: code-server
   namespace: code-server
+  labels:
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
 spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  selector:
-    matchLabels:
-      app: code-server
-      tier: frontend
-  template:
-    metadata:
-      labels:
-        app: code-server
-        tier: frontend
-    spec:
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 60
-      containers:
-      - image: codercom/code-server:latest
-        imagePullPolicy: IfNotPresent
-        name: code-server
-        ports:
-          - name: "http"
-            containerPort: 8080
-            protocol: TCP
-        # readinessProbe:
-        #   httpGet:
-        #     path: /api/v2/buildinfo
-        #     port: "http"
-        #     scheme: "HTTP"
-        # livenessProbe:
-        #   httpGet:
-        #     path: /api/v2/buildinfo
-        #     port: "http"
-        #     scheme: "HTTP"
-        envFrom:
-        - configMapRef:
-            name: code-server-secret # Using the ConfigMap postgres-secret
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: code-storage
-      volumes:
-        - name: code-storage
-          persistentVolumeClaim:
-            claimName: code-server-volume-claim
-        
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"
 ---
+# Source: code-server/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: code-server
-  namespace: code-server
+  labels:
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
 spec:
-  selector:
-    app: code-server
-    tier: frontend
+  type: ClusterIP
   ports:
-    - name: "http"
-      port: 80
-      targetPort: 8080
+    - port: 8080
+      targetPort: http
       protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: code-server
+    app.kubernetes.io/instance: code-server
 ---
-apiVersion: v1
-kind: PersistentVolume # Create PV 
+# Source: code-server/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: code-server-volume # Sets PV name
-  namespace: code-server
+  name: code-server
   labels:
-    app: code-server
-    tier: frontend
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
 spec:
-  storageClassName: manual
-  capacity:
-    storage: 8Gi # Sets PV's size
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/data/coder"
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: code-server
+      app.kubernetes.io/instance: code-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: code-server
+        app.kubernetes.io/instance: code-server
+    spec:
+      imagePullSecrets:
+        []
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - name: init-chmod-data
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        command:
+          - sh
+          - -c
+          - |
+            chown -R 1000:1000 /home/coder
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /home/coder
+      containers:
+        - name: code-server
+          image: "codercom/code-server:4.7.0"
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000
+          env:
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: code-server
+                key: password
+          volumeMounts:
+          - name: data
+            mountPath: /home/coder
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {}
+      serviceAccountName: code-server
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: code-server
 ---
+# Source: code-server/templates/secrets.yaml
 apiVersion: v1
-kind: PersistentVolumeClaim # Create PVC
+kind: Secret
 metadata:
-  name: code-server-volume-claim # Sets PVC's name
-  namespace: code-server
+  name: code-server
+  annotations:
+    "helm.sh/hook": "pre-install"
   labels:
-    app: code-server # Defines app to create PVC for
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 8Gi
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: code-server-secret
-  namespace: code-server
-  labels:
-    app: code-server
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
+type: Opaque
 data:
-  PASSWORD: test
+
+  password: "Qm9ONEhINGVna0NMNUQydFRhdW1BUEFq"
 ---
+# Source: code-server/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "code-server-test-connection"
+  labels:
+    app.kubernetes.io/name: code-server
+    helm.sh/chart: code-server-3.2.2
+    app.kubernetes.io/instance: code-server
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['code-server:8080']
+  restartPolicy: Never

@@ -1,39 +1,3 @@
----
-# Source: coder/templates/coder.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: code-server-sa
-  namespace: code-server
----
-# Source: coder/templates/rbac.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: code-server-workspace-perms
-  namespace: code-server
-rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["*"]
-  - apiGroups: [""]
-    resources: ["persistentvolumeclaims"]
-    verbs: ["*"]
----
-# Source: coder/templates/rbac.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: code-server-sa-bind
-  namespace: code-server
-subjects:
-  - kind: ServiceAccount
-    name: code-server-sa
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: code-server-workspace-perms
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,7 +20,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       containers:
-      - image: ghcr.io/coder/coder:v0.8.14
+      - image: codercom/code-server:latest
         imagePullPolicy: IfNotPresent
         name: code-server
         ports:
@@ -74,20 +38,8 @@ spec:
         #     port: "http"
         #     scheme: "HTTP"
         env:
-          - name: CODER_PG_CONNECTION_URL
-            value: "postgresql://username:password@code-server/code-db.code-server.svc.cluster.local?sslmode=disable"
-          - name: CODER_ADDRESS
-            value: "0.0.0.0:8080"
-          # You'll need to set CODER_ACCESS_URL to an IP or domain
-          # that workspaces can reach. This cannot be localhost
-          # or 127.0.0.1 for non-Docker templates!
-          - name: CODER_ACCESS_URL
-            value: "http://code.ls.local"
-          # This env variable controls whether or not to auto-import the
-          # "kubernetes" template on first startup. This will not work unless
-          # coder.serviceAccount.workspacePerms is true.
-          - name: CODER_TEMPLATE_AUTOIMPORT
-            value: "kubernetes"
+          - name: PASSWORD
+            value: 'test'
 
         resources:
           requests:

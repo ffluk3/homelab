@@ -37,10 +37,9 @@ spec:
         #     path: /api/v2/buildinfo
         #     port: "http"
         #     scheme: "HTTP"
-        env:
-          - name: PASSWORD
-            value: 'test'
-
+        envFrom:
+        - configMapRef:
+            name: code-server-secret # Using the ConfigMap postgres-secret
         resources:
           requests:
             memory: "64Mi"
@@ -48,6 +47,14 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: code-storage
+      volumes:
+        - name: code-storage
+          persistentVolumeClaim:
+            claimName: code-server-volume-claim
+        
 ---
 apiVersion: v1
 kind: Service
@@ -63,3 +70,46 @@ spec:
       port: 80
       targetPort: "http"
       protocol: TCP
+---
+apiVersion: v1
+kind: PersistentVolume # Create PV 
+metadata:
+  name: code-server-volume # Sets PV name
+  namespace: code-server
+  labels:
+    app: code-server
+    tier: frontend
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 8Gi # Sets PV's size
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/data/coder"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim # Create PVC
+metadata:
+  name: code-server-volume-claim # Sets PVC's name
+  namespace: code-server
+  labels:
+    app: code-server # Defines app to create PVC for
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: code-server-secret
+  namespace: code-server
+  labels:
+    app: code-server
+data:
+  PASSWORD: test
+---

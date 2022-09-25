@@ -82,7 +82,7 @@ spec:
           # that workspaces can reach. This cannot be localhost
           # or 127.0.0.1 for non-Docker templates!
           - name: CODER_ACCESS_URL
-            value: "http://pibox.local/code"
+            value: "http://code.ls.local"
           # This env variable controls whether or not to auto-import the
           # "kubernetes" template on first startup. This will not work unless
           # coder.serviceAccount.workspacePerms is true.

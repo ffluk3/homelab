@@ -8,14 +8,14 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`pibox.local`)
+      match: Host(`argo.ls.local`)
       priority: 10
       services:
         - name: argocd-server
           namespace: argocd
           port: 80
     - kind: Rule
-      match: Host(`pibox.local`) && Headers(`Content-Type`, `application/grpc`)
+      match: Host(`argo.ls.local`) && Headers(`Content-Type`, `application/grpc`)
       priority: 11
       services:
         - name: argocd-server

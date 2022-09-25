@@ -16,7 +16,6 @@ spec:
         app: code-server
         tier: frontend
     spec:
-      serviceAccountName: code-server-sa
       restartPolicy: Always
       terminationGracePeriodSeconds: 60
       containers:

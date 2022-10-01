@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: pibox-local
+  name: cert-manager-standard-cert
   namespace: kube-system
 spec:
   # Secret names are always required.
@@ -33,9 +33,10 @@ spec:
     - client auth
   # At least one of a DNS Name, URI, or IP address is required.
   dnsNames:
-    - pibox.local
-    - pihole.local
-    - traefik.local
+    - argo.ls.local
+    - traefik.ls.local
+    - code.ls.local
+    - media.ls.local
   # Issuer references are always required.
   issuerRef:
     name: letsencrypt-prod

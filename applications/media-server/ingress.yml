@@ -1,0 +1,36 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: media-server-ingress
+  namespace: media-server
+spec:
+  entryPoints:
+    - web        
+  routes:           # v-- adding a host rule
+    - match: Host(`media.ls.local`) && PathPrefix(`/sonarr`)
+      kind: Rule
+      services:
+        - name: sonarr
+          port: 80
+    - match: Host(`media.ls.local`) && PathPrefix(`/radarr`)
+      kind: Rule
+      services:
+        - name: radarr
+          port: 80
+    - match: Host(`media.ls.local`) && PathPrefix(`/jackett`)
+      kind: Rule
+      services:
+        - name: jackett
+          port: 80
+    - match: Host(`media.ls.local`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: plex-kube-plex
+          port: 32400
+    - match: Host(`media.ls.local`) && PathPrefix(`/transmission`)
+      kind: Rule
+      services:
+        - name: transmission-transmission-openvpn
+          port: 80
+  tls:
+    certResolver: default

@@ -140,7 +140,6 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 type: Opaque
 data:
-
   password: "Qm9ONEhINGVna0NMNUQydFRhdW1BUEFq"
 ---
 # Source: code-server/templates/tests/test-connection.yaml

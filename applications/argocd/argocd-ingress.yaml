@@ -9,6 +9,7 @@ metadata:
 spec:
   entryPoints:
     - websecure
+    - web
   routes:
     - kind: Rule
       match: Host(`argo.ls.local`)
@@ -26,4 +27,4 @@ spec:
           port: 80
           scheme: h2c
   tls:
-    secretName: default-local-tls
+    secretName: argo-local-tls

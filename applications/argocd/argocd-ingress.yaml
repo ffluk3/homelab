@@ -4,12 +4,10 @@ metadata:
   name: argocd-server
   namespace: argocd
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: selfsigned
 spec:
   entryPoints:
     - websecure
-    - web
   routes:
     - kind: Rule
       match: Host(`argo.ls.local`)

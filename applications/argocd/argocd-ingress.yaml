@@ -26,6 +26,4 @@ spec:
           port: 80
           scheme: h2c
   tls:
-    - secretName: argocd-tls
-      hosts:
-        - argo.ls.local
+    secretName: default-local-tls

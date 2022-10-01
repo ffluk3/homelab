@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: cert-manager-standard-cert
+  name: local-tls-certificate
   namespace: kube-system
 spec:
   # Secret names are always required.
-  secretName: example-com-tls
+  secretName: default-local-tls
 
   # secretTemplate is optional. If set, these annotations and labels will be
   # copied to the Secret named example-com-tls. These labels and annotations will
@@ -39,8 +39,5 @@ spec:
     - media.ls.local
   # Issuer references are always required.
   issuerRef:
-    name: letsencrypt-prod
+    name: selfsigned
     kind: ClusterIssuer
-    # This is optional since cert-manager will default to this value however
-    # if you are using an external issuer, change this to that issuer group.
-    group: cert-manager.io

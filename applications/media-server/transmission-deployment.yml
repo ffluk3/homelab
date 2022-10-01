@@ -43,9 +43,9 @@ spec:
         release: transmission
     spec:
       volumes:
-      - name: media-ssd
+      - name: media-storage
         persistentVolumeClaim:
-          claimName: media-ssd
+          claimName: media-storage
       - hostPath:
           path: /dev/net/tun
         name: dev-tun
@@ -99,10 +99,10 @@ spec:
               - NET_ADMIN
           volumeMounts:
             - mountPath: /data
-              name: media-ssd
+              name: media-storage
               subPath: configs/transmission-data
             - mountPath: /downloads/transmission
-              name: media-ssd
+              name: media-storage
               subPath: downloads/transmission
             - mountPath: /dev/net/tun
               name: dev-tun

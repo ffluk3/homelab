@@ -96,7 +96,6 @@ spec:
           - "--log.level=DEBUG"
           - "--api"
           - "--api.dashboard=true"
-          - "--api.insecure=true"
           - "--ping=true"
           - "--metrics.prometheus=true"
           - "--metrics.prometheus.entrypoint=metrics"

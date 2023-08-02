@@ -1,28 +1,22 @@
 apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+kind: Ingress
 metadata:
   name: argocd-server
   namespace: argocd
   annotations:
     cert-manager.io/cluster-issuer: selfsigned
+    kubernetes.io/ingress.class: traefik
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - kind: Rule
-      match: Host(`argo.ls.local`)
-      priority: 10
-      services:
-        - name: argocd-server
-          namespace: argocd
-          port: 80
-    - kind: Rule
-      match: Host(`argo.ls.local`) && Headers(`Content-Type`, `application/grpc`)
-      priority: 11
-      services:
-        - name: argocd-server
-          namespace: argocd
-          port: 80
-          scheme: h2c
+  rules:
+     - host: "argo.ls.local"
+       http:
+         paths:
+           - path: /
+             pathType: Prefix
+             backend:
+               service:
+                 name: argocd-server
+                 port:
+                   number: 80
   tls:
-    secretName: argo-local-tls
+    - secretName: argo-local-tls

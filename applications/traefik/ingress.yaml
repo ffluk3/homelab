@@ -27,7 +27,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:
-  - web
+  - traefik
   routes:
   - match: Host(`traefik.ls.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     kind: Rule

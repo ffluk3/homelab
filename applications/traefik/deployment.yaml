@@ -98,17 +98,16 @@ spec:
           - "--entrypoints.web.address=:8000/tcp"
           - "--entrypoints.websecure.address=:8443/tcp"
           - "--log.level=DEBUG"
-          - "--api"
           - "--api.dashboard=true"
           - "--api.insecure=true"
           - "--ping=true"
           - "--metrics.prometheus=true"
           - "--metrics.prometheus.entrypoint=metrics"
           - "--providers.kubernetescrd"
-          - "--providers.kubernetescrd.namespaces=default,traefik,kube-system,argocd"
+          - "--providers.kubernetescrd.namespaces=default,traefik,argocd"
           - "--providers.kubernetesingress"
           - "--providers.kubernetesingress.namespaces=default,traefik,kube-system,argocd"
-          - "--entrypoints.websecure.http.tls=true"
+          # - "--entrypoints.websecure.http.tls=true"
         env:
           - name: POD_NAME
             valueFrom:

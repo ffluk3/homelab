@@ -29,7 +29,7 @@ spec:
   entryPoints:
   - web
   routes:
-  - match: Host(`argo.ls.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+  - match: Host(`traefik.ls.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     kind: Rule
     services:
     - name: traefik

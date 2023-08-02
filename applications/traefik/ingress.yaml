@@ -32,6 +32,6 @@ spec:
   - match: Host(`traefik.ls.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     kind: Rule
     services:
-    - name: traefik
-      port: 9000
+    - name: api@internal
+      kind: TraefikService
 

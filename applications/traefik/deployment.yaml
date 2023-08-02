@@ -100,9 +100,9 @@ spec:
           - "--metrics.prometheus=true"
           - "--metrics.prometheus.entrypoint=metrics"
           - "--providers.kubernetescrd"
-          - "--providers.kubernetescrd.namespaces=default,traefik,argocd"
+          - "--providers.kubernetescrd.namespaces=default,traefik,argocd,gitea"
           - "--providers.kubernetesingress"
-          - "--providers.kubernetesingress.namespaces=default,traefik,argocd"
+          - "--providers.kubernetesingress.namespaces=default,traefik,argocd,gitea"
           # - "--entrypoints.websecure.http.tls=true"
         env:
           - name: POD_NAME

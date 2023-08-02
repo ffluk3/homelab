@@ -24,3 +24,7 @@ spec:
     name: "websecure"
     targetPort: websecure
     protocol: TCP
+  - port: 8080
+    name: "dashboard"
+    targetPort: dashboard
+    protocol: TCP

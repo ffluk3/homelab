@@ -27,11 +27,11 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:
-  - traefik
+  - web
   routes:
-  - match: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+  - match: Host(`argo.ls.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     kind: Rule
     services:
-    - name: api@internal
-      kind: TraefikService
+    - name: traefik
+      port: 8080
 

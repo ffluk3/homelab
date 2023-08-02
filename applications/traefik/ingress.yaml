@@ -33,4 +33,5 @@ spec:
     kind: Rule
     services:
     - name: api@internal
+      namespace: traefik
       kind: TraefikService

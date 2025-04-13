@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: 5e-tools
+  name: dnd-5e-tools
   annotations:
     kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
@@ -20,6 +20,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: 5e-tools
+                name: dnd-5e-tools
                 port:
                   number: 80

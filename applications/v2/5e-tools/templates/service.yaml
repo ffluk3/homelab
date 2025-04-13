@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: 5e-tools
+  name: dnd-5e-tools
   labels:
-    app: 5e-tools
+    app: dnd-5e-tools
 spec:
   selector:
-    app: 5e-tools
+    app: dnd-5e-tools
   ports:
     - port: 80
       targetPort: 80

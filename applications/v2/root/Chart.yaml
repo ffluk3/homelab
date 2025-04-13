@@ -1,3 +1,4 @@
 name: root
 description: Root application for the homelab
-type: Application
+type: application
+version: 0.1.0

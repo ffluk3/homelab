@@ -8,6 +8,7 @@ metadata:
 spec:
   project: default
   destination:
+    name: in-cluster
     namespace: dnd
   source:
     repoURL: https://github.com/ffluk3/homelab

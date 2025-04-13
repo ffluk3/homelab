@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 5e-tools
+  labels:
+    app: 5e-tools
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: 5e-tools
+  template:
+    metadata:
+      labels:
+        app: 5e-tools
+    spec:
+      containers:
+        - name: 5e-tools
+          image: ghcr.io/5etools-mirror-3/5etools-src:2.7.5
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

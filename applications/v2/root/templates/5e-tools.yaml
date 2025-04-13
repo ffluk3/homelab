@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dnd-5e-tools
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: dnd
+  source:
+    repoURL: https://github.com/ffluk3/homelab
+    path: applications/v2/5e-tools/
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

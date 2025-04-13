@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: n8n
+  source:
+    repoURL: https://github.com/8gears/n8n-helm-chart
+    path: charts/n8n
+    targetRevision: HEAD
+    helm:
+      values: |-
+        main:
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 5
+        ingress:
+          enabled: true
+          annotations:
+            spec.ingressClassName: traefik
+            cert-manager.io/cluster-issuer: cloudflare-prod
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          className: "traefik"
+          hosts:
+            - host: workflow.lshadler.dev
+              paths: ["/"]
+          tls:
+            - hosts:
+                - workflow.lshadler.dev
+              secretName: workflow-tls
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 5e-tools
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    # For automatic cert generation using Let's Encrypt
+    cert-manager.io/cluster-issuer: "cloudflare-prod"
+spec:
+  tls:
+    - hosts:
+        - 5e-tools.lshadler.dev
+      secretName: 5e-tools-tls
+  rules:
+    - host: 5e-tools.lshadler.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: 5e-tools
+                port:
+                  number: 80
